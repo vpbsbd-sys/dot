@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form DOT/02 — Shivaji University</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#1a2e6b; --navydk:#0f1d44;
+  --blue:#2563b0; --blue-lt:#e8eef8; --blue-bd:#b5cdf0;
+  --gold:#b8860b; --gold-lt:#fdf6e0;
+  --red:#c0392b;
+  --border:#c8c5bc; --border-lt:#e5e2da;
+  --text:#1a1a1a; --muted:#5a5a5a;
+  --bg:#fff; --surface:#f7f6f2;
+  --r:6px; --r-lg:10px;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#dedad2;color:var(--text);font-size:13.5px;line-height:1.5;}
+
+/* ── TOOLBAR ── */
+.toolbar{background:var(--navydk);color:#fff;padding:8px 18px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.toolbar-title{flex:1;font-size:12.5px;color:#8fa0c0;}
+.toolbar-title strong{color:#fff;font-size:13px;}
+.tbtn{border:none;border-radius:var(--r);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:opacity .15s;font-family:inherit;}
+.tbtn-print{background:var(--gold);color:#fff;}
+.tbtn-reset{background:transparent;color:#aaa;border:1px solid #555;}
+.tbtn:hover{opacity:.82;}
+
+/* ── TABS ── */
+.tab-bar{display:flex;max-width:880px;margin:14px auto 0;padding:0 12px;gap:0;border-bottom:2px solid var(--navy);}
+.tab{padding:8px 22px;font-size:13px;font-weight:500;cursor:pointer;border-radius:var(--r) var(--r) 0 0;color:var(--muted);border:1px solid transparent;border-bottom:none;background:transparent;font-family:inherit;transition:all .15s;}
+.tab.active{background:#fff;color:var(--navy);border-color:var(--navy);border-bottom-color:#fff;font-weight:600;}
+.tab:hover:not(.active){background:#dde5f3;color:var(--navy);}
+
+/* ── PAGE ── */
+.page{max-width:880px;margin:0 auto 30px;background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r-lg) var(--r-lg);}
+.panel{display:none;} .panel.active{display:block;}
+
+/* ══════════════════════════════════
+   LETTERHEAD HEADER (both tabs)
+══════════════════════════════════ */
+.lh{border-bottom:3px double var(--navy);padding:8px 0 6px;}
+.lh-logo img{width:100%;height:auto;display:block;}
+
+/* ── FORM BODY ── */
+.fb{padding:14px 22px 20px;}
+.sec{font-size:10.5px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.07em;margin:16px 0 8px;padding-bottom:3px;border-bottom:1.5px solid var(--blue-lt);}
+.hr{border:none;border-top:1px solid var(--border-lt);margin:12px 0;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.g-addr{display:grid;grid-template-columns:1fr 100px;gap:10px;align-items:end;}
+.f{margin-bottom:10px;}
+.lbl{display:block;font-size:11px;color:var(--muted);margin-bottom:3px;font-weight:500;}
+.req{color:var(--red);}
+input[type=text],input[type=email],input[type=tel],input[type=date],select,textarea{
+  width:100%;padding:7px 9px;font-size:13px;border:1px solid var(--border);border-radius:var(--r);
+  background:#fff;color:var(--text);font-family:inherit;transition:border-color .15s,box-shadow .15s;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,176,.1);}
+textarea{resize:vertical;min-height:56px;}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:26px;}
+
+/* ── CHECKBOXES ── */
+.cbg{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;}
+.cbi{display:flex;align-items:flex-start;gap:8px;padding:7px 9px;border:1px solid var(--border-lt);border-radius:var(--r);cursor:pointer;transition:background .12s,border-color .12s;}
+.cbi:hover{background:var(--surface);border-color:var(--border);}
+.cbi.on{border-color:var(--blue);background:var(--blue-lt);}
+.cbi input[type=checkbox]{margin-top:2px;width:14px;height:14px;accent-color:var(--navy);flex-shrink:0;cursor:pointer;}
+.cbi label{font-size:12.5px;cursor:pointer;line-height:1.4;}
+.extra{display:none;margin-top:7px;} .extra.show{display:block;}
+.extra-g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+/* ── SUCCESS BAR ── */
+.ok{display:none;background:#eaf3de;border:1px solid #b8d98b;border-radius:var(--r);padding:9px 13px;margin-top:10px;font-size:12.5px;color:#2e5c0a;}
+
+/* ── BOTTOM BAR ── */
+.bot{background:var(--surface);border-top:1px solid var(--border);padding:9px 20px;display:flex;align-items:center;justify-content:space-between;}
+.bot-ref{font-size:10.5px;color:var(--muted);}
+.bot-btns{display:flex;gap:7px;}
+.btn-sub{background:var(--navy);color:#fff;border:none;border-radius:var(--r);padding:8px 20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+.btn-sub:hover{opacity:.85;}
+.btn-clr{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:var(--r);padding:8px 13px;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.btn-clr:hover{background:var(--surface);}
+
+/* ══════════════════════════════════
+   BONAFIDE CERTIFICATE
+══════════════════════════════════ */
+.cert-ref-row{display:flex;justify-content:space-between;align-items:center;padding:7px 22px 5px;border-bottom:1px solid var(--border-lt);font-size:11.5px;color:var(--muted);}
+.cert-body{padding:28px 40px 24px;}
+.cert-title{text-align:center;font-size:20px;font-weight:700;letter-spacing:.06em;text-decoration:underline;text-underline-offset:5px;margin-bottom:30px;color:var(--text);}
+
+/* Certificate paragraph — continuous flowing text with inline blanks */
+.cert-para{font-size:14px;line-height:2.8;color:var(--text);text-align:justify;word-break:break-word;}
+.bl{display:inline-block;min-width:130px;max-width:220px;border-bottom:1.5px solid var(--text);text-align:center;font-weight:600;color:var(--navy);padding:0 4px 2px;vertical-align:bottom;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bl.w{min-width:180px;max-width:260px;}
+.bl.s{min-width:55px;max-width:90px;}
+.bl.m{min-width:110px;max-width:160px;}
+
+.cert-purpose-row{margin-top:16px;display:flex;align-items:center;gap:10px;}
+.cert-purpose-row label{font-size:12px;color:var(--muted);white-space:nowrap;font-weight:500;}
+.cert-purpose-row input{flex:1;padding:7px 9px;font-size:13px;border:1px solid var(--border);border-radius:var(--r);font-family:inherit;}
+.cert-purpose-row input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,176,.1);}
+
+.cert-sign{margin-top:44px;text-align:right;padding-right:10px;}
+.cert-sign-line{width:200px;border-bottom:1.5px solid var(--text);margin-left:auto;height:38px;}
+.cert-sign-lbl{font-size:13px;font-weight:600;text-align:right;margin-top:4px;}
+
+.cert-note{font-size:11.5px;color:var(--muted);background:var(--gold-lt);border:1px solid #e0cc80;border-radius:var(--r);padding:8px 12px;margin-top:14px;}
+
+/* ══════════════════════════════════
+   PRINT STYLES
+══════════════════════════════════ */
+@media print{
+  @page{margin:8mm 10mm;size:A4 portrait;}
+  body{background:#fff;}
+  .toolbar,.tab-bar,.bot,.cert-purpose-row,.cert-note,.ok{display:none!important;}
+  .page{margin:0;border:none;border-radius:0;max-width:100%;box-shadow:none;}
+
+  /* only show active panel */
+  .panel{display:none!important;}
+  .panel.active{display:block!important;}
+
+  /* Header */
+  .lh{padding:4px 0 3px;}
+  .lh img{width:100%;height:auto;}
+
+  /* Form panel */
+  .fb{padding:8px 14px 12px;}
+  .f{margin-bottom:6px;}
+  input,select,textarea{border:none!important;background:transparent!important;padding:1px 0!important;font-size:12px!important;}
+  .sec{margin:10px 0 5px;font-size:9.5px;}
+  .hr{margin:7px 0;}
+  .g2,.g3{gap:6px;}
+  .cbg{gap:2px 10px;}
+  .cbi{border:none;padding:2px 0;background:transparent!important;}
+  .cbi input[type=checkbox]{width:12px;height:12px;}
+  .cbi label{font-size:11.5px;}
+  textarea{min-height:30px!important;}
+
+  /* Certificate panel */
+  .cert-ref-row{padding:4px 14px;}
+  .cert-body{padding:14px 28px 16px;}
+  .cert-title{font-size:17px;margin-bottom:18px;}
+  .cert-para{font-size:13px;line-height:2.4;}
+  .bl{border-bottom:1px solid #000;}
+  .cert-sign{margin-top:30px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="toolbar-title"><strong>Shivaji University — Department of Technology</strong> &nbsp;|&nbsp; Form DOT/02</div>
+  <button class="tbtn tbtn-reset" onclick="resetAll()">Clear form</button>
+  <button class="tbtn tbtn-print" onclick="doPrint()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    Print / Save as PDF
+  </button>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab active" id="t1" onclick="switchTab('p1','t1')">📋 &nbsp;Application Form (DOT/02)</button>
+  <button class="tab" id="t2" onclick="switchTab('p2','t2')">🎓 &nbsp;Bonafide Certificate</button>
+</div>
+
+<div class="page">
+
+  <!-- ════════════════════════════════
+       PANEL 1 — APPLICATION FORM
+  ════════════════════════════════ -->
+  <div id="p1" class="panel active">
+
+    <!-- LETTERHEAD -->
+    <div class="lh">
+      <img src="logo.png" alt="Shivaji University — School of Engineering and Technology">
+    </div>
+
+    <div class="fb">
+
+      <!-- ACADEMIC INFO -->
+      <div class="sec">Academic information</div>
+      <div class="g3">
+        <div class="f">
+          <label class="lbl" for="acYear">Academic year <span class="req">*</span></label>
+          <select id="acYear" onchange="sync()">
+            <option value="">Select</option>
+            <option>2024–25</option><option>2025–26</option>
+            <option selected>2026–27</option><option>2027–28</option>
+          </select>
+        </div>
+        <div class="f">
+          <label class="lbl" for="classYear">Class <span class="req">*</span></label>
+          <select id="classYear" onchange="sync()">
+            <option value="">Select</option>
+            <option>I</option><option>II</option><option>III</option><option>IV</option>
+          </select>
+        </div>
+        <div class="f">
+          <label class="lbl" for="course">Course <span class="req">*</span></label>
+          <select id="course" onchange="sync()">
+            <option value="">Select</option>
+            <option>B.Tech</option><option>M.Tech</option>
+          </select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="f">
+          <label class="lbl" for="prog">Programme <span class="req">*</span></label>
+          <select id="prog" onchange="sync()">
+            <option value="">Select programme</option>
+            <option>Civil</option><option>Chemical</option><option>Mechanical</option>
+            <option>CST</option><option>E&amp;TC</option>
+            <option>Food Technology</option><option>EST</option><option>Energy Technology</option>
+          </select>
+        </div>
+        <div class="f">
+          <label class="lbl" for="caste">Caste category <span class="req">*</span></label>
+          <select id="caste">
+            <option value="">Select</option>
+            <option>Open</option><option>OBC</option><option>SBC</option>
+            <option>SC</option><option>ST</option><option>NJ-NT</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="sec">Personal details</div>
+
+      <div class="g2">
+        <div class="f">
+          <label class="lbl" for="prn">PRN (Permanent Registration No.) <span class="req">*</span></label>
+          <input type="text" id="prn" placeholder="e.g. 2023012345678" maxlength="15" oninput="sync()">
+        </div>
+        <div class="f">
+          <label class="lbl" for="rollno">Roll No.</label>
+          <input type="text" id="rollno" placeholder="Roll number" oninput="sync()">
+        </div>
+      </div>
+      <div class="f">
+        <label class="lbl" for="sname">Full name (as per university records) <span class="req">*</span></label>
+        <input type="text" id="sname" placeholder="Surname / First name / Middle name" oninput="sync()">
+      </div>
+      <div class="f">
+        <label class="lbl" for="pname">Father's / Mother's name (S/o or D/o) <span class="req">*</span></label>
+        <input type="text" id="pname" placeholder="Parent / Guardian full name" oninput="sync()">
+      </div>
+      <div class="g3">
+        <div class="f">
+          <label class="lbl" for="dob">Date of birth <span class="req">*</span></label>
+          <input type="date" id="dob">
+        </div>
+        <div class="f">
+          <label class="lbl" for="mob1">Mobile 1 <span class="req">*</span></label>
+          <input type="tel" id="mob1" placeholder="10-digit" maxlength="10">
+        </div>
+        <div class="f">
+          <label class="lbl" for="mob2">Mobile 2</label>
+          <input type="tel" id="mob2" placeholder="Optional" maxlength="10">
+        </div>
+      </div>
+      <div class="g2">
+        <div class="f">
+          <label class="lbl" for="email">Email address <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="student@example.com">
+        </div>
+        <div class="f">
+          <label class="lbl" for="landline">Landline</label>
+          <input type="tel" id="landline" placeholder="With STD code">
+        </div>
+      </div>
+      <div class="f">
+        <label class="lbl" for="addr">Address</label>
+        <textarea id="addr" rows="2" placeholder="House no., Street, Area / Village, Taluka, District"></textarea>
+      </div>
+      <div class="g-addr">
+        <div class="f" style="margin-bottom:0">
+          <label class="lbl" for="city">City / Town</label>
+          <input type="text" id="city" placeholder="City">
+        </div>
+        <div class="f" style="margin-bottom:0">
+          <label class="lbl" for="pin">PIN code</label>
+          <input type="text" id="pin" placeholder="6-digit" maxlength="6">
+        </div>
+      </div>
+
+      <div class="hr" style="margin-top:13px;"></div>
+      <div class="sec">Request for — tick all that apply <span class="req">*</span></div>
+
+      <div class="cbg">
+        <div class="cbi" id="cb_wrap_bonafide">
+          <input type="checkbox" id="cb_bon" onchange="onBonafide(this)">
+          <label for="cb_bon">Bonafide certificate</label>
+        </div>
+        <div class="cbi">
+          <input type="checkbox" id="cb_bus">
+          <label for="cb_bus">Bus concession</label>
+        </div>
+        <div class="cbi">
+          <input type="checkbox" id="cb_rail" onchange="xtra('xRail',this)">
+          <label for="cb_rail">Railway concession</label>
+        </div>
+        <div class="cbi">
+          <input type="checkbox" id="cb_fee">
+          <label for="cb_fee">Fee estimate for loan</label>
+        </div>
+        <div class="cbi">
+          <input type="checkbox" id="cb_res">
+          <label for="cb_res">Residential proof</label>
+        </div>
+        <div class="cbi">
+          <input type="checkbox" id="cb_cv">
+          <label for="cb_cv">Caste validation letter</label>
+        </div>
+        <div class="cbi">
+          <input type="checkbox" id="cb_ex">
+          <label for="cb_ex">Ex-serviceman aid certificate</label>
+        </div>
+        <div class="cbi">
+          <input type="checkbox" id="cb_hos">
+          <label for="cb_hos">Hostel accommodation</label>
+        </div>
+        <div class="cbi">
+          <input type="checkbox" id="cb_ref">
+          <label for="cb_ref">Refund of deposits</label>
+        </div>
+        <div class="cbi">
+          <input type="checkbox" id="cb_oth" onchange="xtra('xOth',this)">
+          <label for="cb_oth">Any other (specify)</label>
+        </div>
+      </div>
+
+      <div class="extra" id="xRail">
+        <div class="extra-g2">
+          <div class="f" style="margin:0"><label class="lbl">Station — From</label><input type="text" id="railFrom" placeholder="Departure station"></div>
+          <div class="f" style="margin:0"><label class="lbl">Station — To</label><input type="text" id="railTo" placeholder="Destination station"></div>
+        </div>
+      </div>
+      <div class="extra" id="xOth">
+        <div class="f" style="margin:6px 0 0"><label class="lbl">Please specify</label><input type="text" id="othText" placeholder="Describe your request"></div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="sec">Remarks (optional)</div>
+      <div class="f"><textarea id="remarks" rows="2" placeholder="Any additional information for the department office..."></textarea></div>
+
+      <div class="ok" id="appOk">✓ Application submitted successfully. Please carry this form with required documents to the Department of Technology office for signature and submission.</div>
+    </div>
+
+    <div class="bot">
+      <div class="bot-ref">SU/DOT/B.Tech &nbsp;|&nbsp; Joh/SUK/T_Sm 1/1–7.cdr</div>
+      <div class="bot-btns">
+        <button class="btn-clr" onclick="resetAll()">Clear form</button>
+        <button class="btn-sub" onclick="submitApp()">Submit application</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       PANEL 2 — BONAFIDE CERTIFICATE
+  ════════════════════════════════ -->
+  <div id="p2" class="panel">
+
+    <!-- LETTERHEAD -->
+    <div class="lh">
+      <img src="logo.png" alt="Shivaji University — School of Engineering and Technology">
+    </div>
+
+    <!-- REF ROW -->
+    <div class="cert-ref-row">
+      <span>SU/DOT/B.Tech</span>
+      <span>Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    </div>
+
+    <div class="cert-body">
+      <div class="cert-title">BONAFIDE CERTIFICATE</div>
+
+      <p class="cert-para">This is to certify that Mr./Ms. <span class="bl w" id="c_name">&nbsp;</span> S/o or D/o <span class="bl w" id="c_parent">&nbsp;</span> bearing Roll No. <span class="bl s" id="c_roll">&nbsp;</span> and PRN <span class="bl m" id="c_prn">&nbsp;</span> is a student of <strong><span id="c_course">B.Tech. / M.Tech</span></strong> <span class="bl s" id="c_year">&nbsp;</span> Year <strong><span id="c_prog">Civil/Chem./Mech./CST/E&amp;TC/Food/EST/Energy Tech.</span></strong> for the academic year <span class="bl s" id="c_acyear">&nbsp;</span>. He/She is a bonafide student of Department of Technology. The certificate is issued for the purpose of <span class="bl w" id="c_purpose">&nbsp;</span> on his/her request.</p>
+
+      <div class="cert-purpose-row">
+        <label for="cert_pur">Purpose of certificate:</label>
+        <input type="text" id="cert_pur" placeholder="e.g. Bank loan / Railway concession / Scholarship" oninput="setPurpose(this.value)">
+      </div>
+
+      <div class="cert-sign">
+        <div class="cert-sign-line"></div>
+        <div class="cert-sign-lbl">Director</div>
+      </div>
+
+      <div class="cert-note">
+        ℹ️ This certificate is auto-filled from the Application Form. To edit student details, go to the <strong>Application Form</strong> tab, update the fields, then return here.
+      </div>
+    </div>
+
+    <div class="bot">
+      <div class="bot-ref">SU/DOT/B.Tech &nbsp;|&nbsp; Department of Technology, Shivaji University, Kolhapur – 416 004</div>
+      <div class="bot-btns">
+        <button class="btn-clr" onclick="switchTab('p1','t1')">← Back to form</button>
+        <button class="tbtn tbtn-print" onclick="doPrint()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print Certificate
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ---- Tab switch ---- */
+function switchTab(pid, tid) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(pid).classList.add('active');
+  document.getElementById(tid).classList.add('active');
+}
+
+/* ---- Toggle extras ---- */
+function xtra(id, cb) { document.getElementById(id).classList.toggle('show', cb.checked); }
+
+/* ---- Bonafide checkbox ---- */
+function onBonafide(cb) {
+  document.getElementById('cb_wrap_bonafide').classList.toggle('on', cb.checked);
+  sync();
+}
+
+/* ---- Sync form → certificate ---- */
+function v(id) { return (document.getElementById(id)||{}).value || ''; }
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val.trim() || '\u00a0';
+}
+function sync() {
+  set('c_name',   v('sname'));
+  set('c_parent', v('pname'));
+  set('c_roll',   v('rollno'));
+  set('c_prn',    v('prn'));
+  set('c_acyear', v('acYear'));
+  set('c_year',   v('classYear'));
+  const cMap = {'B.Tech':'B.Tech.','M.Tech':'M.Tech'};
+  const el = document.getElementById('c_course');
+  if(el) el.textContent = cMap[v('course')] || 'B.Tech. / M.Tech';
+  const pEl = document.getElementById('c_prog');
+  if(pEl) pEl.textContent = v('prog') || 'Civil/Chem./Mech./CST/E&TC/Food/EST/Energy Tech.';
+}
+function setPurpose(val) { set('c_purpose', val); }
+
+/* ---- Submit application ---- */
+function submitApp() {
+  const req = [
+    {id:'acYear',n:'Academic Year'},{id:'classYear',n:'Class'},
+    {id:'course',n:'Course'},{id:'prog',n:'Programme'},
+    {id:'caste',n:'Caste Category'},{id:'prn',n:'PRN'},
+    {id:'dob',n:'Date of Birth'},{id:'sname',n:'Full Name'},
+    {id:'pname',n:"Parent's Name"},{id:'mob1',n:'Mobile 1'},
+    {id:'email',n:'Email'}
+  ];
+  let miss = [];
+  req.forEach(f => { if(!v(f.id)) miss.push(f.n); });
+  const cbs = ['cb_bon','cb_bus','cb_rail','cb_fee','cb_res','cb_cv','cb_ex','cb_hos','cb_ref','cb_oth'];
+  if (!cbs.some(id => document.getElementById(id).checked)) miss.push('at least one document request');
+  if (miss.length) { alert('Please complete:\n\n• ' + miss.join('\n• ')); return; }
+  sync();
+  const ok = document.getElementById('appOk');
+  ok.style.display = 'block';
+  ok.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if (document.getElementById('cb_bon').checked) {
+    setTimeout(() => {
+      if (confirm('Bonafide Certificate is selected.\n\nOpen the Bonafide Certificate now?')) {
+        switchTab('p2','t2');
+        window.scrollTo({top:0,behavior:'smooth'});
+      }
+    }, 400);
+  }
+}
+
+/* ---- Print: only active panel ---- */
+function doPrint() { window.print(); }
+
+/* ---- Reset ---- */
+function resetAll() {
+  document.querySelectorAll('input,select,textarea').forEach(el => {
+    if(el.type==='checkbox') el.checked=false; else el.value='';
+  });
+  document.getElementById('xRail').classList.remove('show');
+  document.getElementById('xOth').classList.remove('show');
+  document.getElementById('cb_wrap_bonafide').classList.remove('on');
+  document.getElementById('appOk').style.display='none';
+  sync();
+}
+
+sync();
+</script>
+</body>
+</html>
